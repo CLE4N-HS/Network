@@ -4,8 +4,8 @@
 sf::RectangleShape Window::rectangle = sf::RectangleShape();
 sf::Text Window::text = sf::Text();
 
-sf::RenderWindow Window::m_renderWindow = sf::RenderWindow();
-sf::RenderTexture Window::m_renderTexture = sf::RenderTexture();
+sf::RenderWindow Window::m_renderWindow;/* = sf::RenderWindow();*/
+sf::RenderTexture Window::m_renderTexture;// = sf::RenderTexture();
 sf::Font Window::m_font = sf::Font();
 sf::VideoMode Window::m_videoMode = sf::VideoMode::getDesktopMode();
 sf::String Window::m_title = sf::String("Echoes of Runterra");
@@ -20,8 +20,6 @@ sf::Vector2f Window::m_mousePos = sf::Vector2f();
 sf::Sprite Window::m_sprite = sf::Sprite();
 sf::Texture Window::m_texture = sf::Texture();
 
-Window window;
-
 Window::Window() : Window(m_title, m_style)
 {
 }
@@ -30,7 +28,7 @@ Window::Window(const sf::String& title, sf::Uint32 style)
 {
 	CreateWindow();
 	m_renderTexture.create(m_videoMode.width, m_videoMode.height);
-	m_font.loadFromFile("../Resources/NeoTech.ttf"); // default font for now
+	//m_font.loadFromFile("../Resources/NeoTech.ttf"); // default font for now
 	text.setFont(m_font);
 }
 

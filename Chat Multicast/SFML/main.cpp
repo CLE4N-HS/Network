@@ -2,12 +2,14 @@
 #include "Window.h"
 #include "SFML/Network.hpp"
 
-class Player
+struct Player
 {
-public:
 	inline Player()
 	{
-
+		m_color.r = static_cast<sf::Uint8>(rand() % 256);
+		m_color.g = static_cast<sf::Uint8>(rand() % 256);
+		m_color.b = static_cast<sf::Uint8>(rand() % 256);
+		m_color.a = 255;
 	}
 
 	~Player() = default;
@@ -26,33 +28,180 @@ public:
 			m_pos.x += m_speed * dt;
 	}
 
-	inline void Display()
+	inline void Display() const
 	{
 		Window::rectangle.setPosition(m_pos);
+		Window::rectangle.setSize(sf::Vector2f(50.f, 50.f));
 		Window::rectangle.setFillColor(m_color);
+
+		Window::Draw();
 	}
 
-private:
 	sf::Vector2f m_pos = sf::Vector2f(960.f, 540.f);
 	float m_speed = 500.f;
 	sf::Color m_color = sf::Color::White;
 
 };
 
+sf::Packet& operator <<(sf::Packet& _packet, const sf::Vector2f& _vec2f)
+{
+	return _packet << _vec2f.x << _vec2f.y;
+}
+sf::Packet& operator >>(sf::Packet& _packet, sf::Vector2f& _vec2f)
+{
+	return _packet >> _vec2f.x >> _vec2f.y;
+}
+
+sf::Packet& operator <<(sf::Packet& _packet, const sf::Color& _color)
+{
+	return _packet << _color.r << _color.g << _color.b << _color.a;
+}
+sf::Packet& operator >>(sf::Packet& _packet, sf::Color& _color)
+{
+	return _packet >> _color.r >> _color.g >> _color.b >> _color.a;
+}
+
+sf::Packet& operator <<(sf::Packet& _packet, const Player& _player)
+{
+	return _packet << _player.m_pos << _player.m_color;
+}
+sf::Packet& operator >>(sf::Packet& _packet, Player& _player)
+{
+	return _packet >> _player.m_pos >> _player.m_color;
+}
+
+void ServerUpdate()
+{
+	Player p;
+	sf::UdpSocket sSocket;
+	sSocket.bind(55002);
+	//sf::IpAddress sIpAddress = sf::IpAddress::getLocalAddress();
+	sf::IpAddress sIpAddress(192, 168, 10, 147);
+	sf::IpAddress sIpAddress2(192, 168, 10, 148);
+	//sf::IpAddress sIpAddress(255, 1, 2, 3);
+	sf::Packet sPacket;
+	unsigned short sPort = 55002;
+
+	while (!Window::IsDone())
+	{
+		//Window::Update();
+		//
+		//
+		//sPacket.clear();
+		//sSocket.receive(sPacket, sIpAddress, sPort);
+		//sPacket >> p;
+		//
+		//p.Display();
+		//
+		//
+		//sPacket.clear();
+		//sSocket.receive(sPacket, sIpAddress2, sPort);
+		//sPacket >> p;
+		//
+		//p.Display();
+		//
+		//Window::Display();
+	}
+}
+
 int main()
 {
-	Tools tools;
+	// server
+	//sf::UdpSocket sSocket;
+	//sSocket.bind(55002);
+	//sf::Packet sPacket;
+	//sf::IpAddress sIpAddress = sf::IpAddress::getLocalAddress();
+
+	// client
+	sf::UdpSocket cSocket;
+	cSocket.bind(55001);
+	sf::Packet cPacket;
+
+
 	Window window(sf::String("SFML Network"), sf::Style::Default);
 
-	while (!window.IsDone())
-	{
+
+
+	//sf::Thread serverThread(&ServerUpdate);
+	//serverThread.launch();
+
+
+	Player p1;
+
+
+
+	// server
+	Player p;
+	sf::UdpSocket sSocket;
+	sSocket.bind(55002);
+	//sf::IpAddress sIpAddress = sf::IpAddress::getLocalAddress();
+	sf::IpAddress sIpAddress(192, 168, 10, 147);
+	sf::IpAddress sIpAddress2(192, 168, 10, 148);
+	//sf::IpAddress sIpAddress(255, 1, 2, 3);
+	sf::Packet sPacket;
+	unsigned short sPort = 55002;
+
+	while (!Window::IsDone())
+	{	
 		Tools::Update();
-		window.Update();
+		Window::Update();
+		//window.Update();
 
+		p1.UpdateMovement();
+		
+		cPacket.clear();
+		cPacket << p1;
+		//cSocket.send(cPacket, sf::IpAddress::getLocalAddress().toString(), 55002);
+		//cSocket.send(cPacket, sf::IpAddress(255, 1, 2, 3), 55002);
+		cSocket.send(cPacket, sf::IpAddress(192, 168, 10, 147), 55002);
+		cSocket.send(cPacket, sf::IpAddress(192, 168, 10, 148), 55002);
+		
+		
+		
+		sPacket.clear();
+		if (cPacket.getDataSize() > 0)
+			sSocket.receive(sPacket, sIpAddress, sPort);
+		sPacket >> p;
+		
+		p.Display();
+		
+		
+		//sPacket.clear();
+		//sSocket.receive(sPacket, sIpAddress2, sPort);
+		sPacket >> p;
+		
+		p.Display();
 
-
-		window.Display();
+		Window::Display();
+		//p1.Display();
+		
+		//window.Display();
 	}
+
+//unsigned short sPort = 55002;
+//cPacket << p1;
+////cPacket.append(reinterpret_cast<char*>(&p1.m_pos.x))
+//cSocket.send(cPacket, sf::IpAddress::getLocalAddress().toString(), 55002);
+
+//cPacket << sPort;
+
+
+//p1.m_pos = sf::Vector2f(-1.f, -2.f);
+//sSocket.receive(sPacket, sIpAddress, sPort);
+//Player cPlayer;
+//sPacket >> cPlayer;
+//std::cout << sPacket << std::endl;
+
+//// Send a message to 192.168.1.50 on port 55002
+//std::string cMessage = "Hi, I am " + sf::IpAddress::getLocalAddress().toString();
+////cSocket.send(cMessage.c_str(), cMessage.size() + 1, "192.168.10.147", 55002);
+//
+//// Receive an answer (most likely from 192.168.1.50, but could be anyone else)
+//char cBuffer[1024];
+//std::size_t cReceived = 0;
+//sf::IpAddress cSender;
+//sSocket.receive(cBuffer, sizeof(cBuffer), cReceived, cSender, sPort);
+//std::cout << cSender.toString() << " said: " << cBuffer << std::endl;
 
 	return EXIT_SUCCESS;
 }

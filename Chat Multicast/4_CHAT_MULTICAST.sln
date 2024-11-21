@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TCP Server", "TCP Server\TC
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SFML", "SFML\SFML.vcxproj", "{8B1439A6-EAD5-4D28-884D-7AC69447AA7B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SFML_SERVER", "SFML_SERVER\SFML_SERVER.vcxproj", "{2D6F9879-9A00-4A89-BF43-72B4B7652ED8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,14 @@ Global
 		{8B1439A6-EAD5-4D28-884D-7AC69447AA7B}.Release|x64.Build.0 = Release|x64
 		{8B1439A6-EAD5-4D28-884D-7AC69447AA7B}.Release|x86.ActiveCfg = Release|Win32
 		{8B1439A6-EAD5-4D28-884D-7AC69447AA7B}.Release|x86.Build.0 = Release|Win32
+		{2D6F9879-9A00-4A89-BF43-72B4B7652ED8}.Debug|x64.ActiveCfg = Debug|x64
+		{2D6F9879-9A00-4A89-BF43-72B4B7652ED8}.Debug|x64.Build.0 = Debug|x64
+		{2D6F9879-9A00-4A89-BF43-72B4B7652ED8}.Debug|x86.ActiveCfg = Debug|Win32
+		{2D6F9879-9A00-4A89-BF43-72B4B7652ED8}.Debug|x86.Build.0 = Debug|Win32
+		{2D6F9879-9A00-4A89-BF43-72B4B7652ED8}.Release|x64.ActiveCfg = Release|x64
+		{2D6F9879-9A00-4A89-BF43-72B4B7652ED8}.Release|x64.Build.0 = Release|x64
+		{2D6F9879-9A00-4A89-BF43-72B4B7652ED8}.Release|x86.ActiveCfg = Release|Win32
+		{2D6F9879-9A00-4A89-BF43-72B4B7652ED8}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -16,7 +16,7 @@
 int main(int argc, char** argv)
 {
 	const u_short PORT = 21;
-	const char* IP = "127.0.0.1";//"192.168.75.1";//"127.0.0.1";
+	const char* IP = "192.168.10.147";//"192.168.75.1";//"127.0.0.1";
 	const int BUFFERLENGTH = 1473;
 
 	sockaddr_in Info_Process;
@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 	int iresult = WSAStartup(MAKEWORD(2, 2), &data);
 	if (iresult != NO_ERROR)
 	{
-		std::cout << L"WSAStartup function failed with error :" << iresult;
+		std::cout << "WSAStartup function failed with error :" << iresult;
 		return 1;
 	}
 	if (data.szDescription)

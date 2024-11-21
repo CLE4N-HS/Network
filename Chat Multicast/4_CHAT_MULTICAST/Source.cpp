@@ -6,7 +6,7 @@
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <string.h>
+#include <string>
 #include <iostream>
 #include <conio.h>
 #include <stdio.h>
@@ -30,6 +30,7 @@ sockaddr_in Info_Process_Local;
 HANDLE H_Event_Reseau;
 WSANETWORKEVENTS Raison_Event_Reseau;
 std::string pseudo = "Default";
+std::string key = "/key";
 //-------------------
 
 
@@ -48,8 +49,8 @@ void Reception_Et_Affiche()
 		std::string Buffer(L_Buffer);
 		Buffer.resize(L_Taille);
 
-		std::string recievedPseudo(Buffer.substr(0, Buffer.find(" ")));
-		Buffer.erase(0, recievedPseudo.size() + 1);
+		std::string recievedPseudo(Buffer.substr(0, Buffer.find(key)));
+		Buffer.erase(0, recievedPseudo.size() + key.size());
 
 		//std::string iefpjef(inet_ntoa(L_Info_Distant.sin_addr));
 		//if (iefpjef != "192.168.10.148" && iefpjef != "192.168.10.147")
@@ -74,7 +75,7 @@ void Reception_Et_Affiche()
 int main()
 {
 	std::cout << "Enter your pseudo :" << std::endl;
-	std::cin >> pseudo;
+	std::getline(std::cin, pseudo);
 
 	srand(time(0));
 	WSADATA data;
@@ -84,7 +85,7 @@ int main()
 	int result = WSAStartup(MAKEWORD(2, 2), &data);
 	if (result != NO_ERROR)
 	{
-		std::cout << L"WSAStartup function failed with error :" << result;
+		std::cout << "WSAStartup function failed with error :" << result;
 		return 1;
 	}
 	
@@ -158,14 +159,13 @@ int main()
 		if (_kbhit())
 		{
 			gets_s(L_Message, 1472);
-			//cin >> L_Message;
 
-			if (L_Message[0] == 'q')
+			if (L_Message[0] == 'e' && L_Message[1] == 'x' && L_Message[2] == 'i' && L_Message[3] == 't' && L_Message[4] == '\0')
 			{
 				L_Continuer = 0;
 			}
 
-			std::string Str_Message(pseudo + " " + L_Message);
+			std::string Str_Message(pseudo + key + L_Message);
 
 			sendto(Le_Socket, Str_Message.c_str(), Str_Message.length(), 0, (sockaddr*)&Info_Process_Broadcast, sizeof(Info_Process_Broadcast));
 		}
@@ -174,24 +174,17 @@ int main()
 			DWORD L_Raison = WaitForSingleObject(H_Event_Reseau, 50);
 			if (L_Raison != WAIT_TIMEOUT)
 			{
+				WSAEventSelect(Le_Socket, H_Event_Reseau, FD_READ);
 				WSAEnumNetworkEvents(Le_Socket, H_Event_Reseau, &Raison_Event_Reseau);
+			
 				if ((Raison_Event_Reseau.lNetworkEvents & FD_READ) == FD_READ)
 				{
 					Reception_Et_Affiche();
 				}
-				if ((Raison_Event_Reseau.lNetworkEvents & FD_CONNECT) == FD_CONNECT)
-				{
-					std::cout << "someone connected" << std::endl;
-				}
-				if ((Raison_Event_Reseau.lNetworkEvents & FD_CONNECT_BIT) == FD_CONNECT_BIT)
-				{
-					std::cout << "someone connected bit" << std::endl;
-				}
 			}
-
 		}
 	}
 
 	WSACleanup();
-	return 0;
+	return EXIT_SUCCESS;
 }

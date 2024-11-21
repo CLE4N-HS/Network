@@ -15,9 +15,9 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 
-#define DEFAULT_PORT 9666
+#define DEFAULT_PORT 21
 #define DEFAULT_BUFLEN 1473
-const char* IP = "192.168.10.170";//"127.0.0.1";
+const char* IP = "192.168.10.147";//"127.0.0.1";
 
 void Sending(SOCKET& Socket, std::string pseudo, std::string message)
 {

@@ -109,7 +109,7 @@ void ServerUpdate()
 int main()
 {
 	sf::UdpSocket cSocket;
-	cSocket.bind(55001);
+	//cSocket.bind(55002, sf::IpAddress(192, 168, 0, 29));
 	sf::Packet cPacket;
 
 	Window window(sf::String("SFML Network SERVER"), sf::Style::Default);
@@ -130,6 +130,7 @@ int main()
 	//sf::IpAddress cIpAddress2(192, 168, 10, 147);
 	sf::IpAddress cIpAddress(192, 168, 0, 29);
 	sf::IpAddress cIpAddress2(192, 168, 0, 29);
+	sf::IpAddress cIpAddressAny(sf::IpAddress::Any);
 	//sf::IpAddress sIpAddress(255, 1, 2, 3);
 	sf::Packet sPacket;
 	unsigned short sPort = 55002;
@@ -151,16 +152,16 @@ int main()
 
 		// recieve
 		if (nbPlayer >= 1)
-			sSocket.receive(cPacket, cIpAddress, sPort);
+			sSocket.receive(cPacket, cIpAddressAny, sPort);
 		if (nbPlayer >= 2)
-			sSocket.receive(cPacket, cIpAddress2, sPort);
+			sSocket.receive(cPacket, cIpAddressAny, sPort);
 
 
 		// send
 		if (nbPlayer >= 1 && cPacket.getDataSize() > 0)
-			sSocket.send(cPacket, cIpAddress, sPort);
+			cSocket.send(cPacket, cIpAddress, sPort);
 		if (nbPlayer >= 2)
-			sSocket.send(cPacket, cIpAddress2, sPort);
+			cSocket.send(cPacket, cIpAddress2, sPort);
 
 		//cPacket >> p;
 		//std::cout << "SEND : " << p.m_pos.x << std::endl;

@@ -107,7 +107,7 @@ void ServerUpdate()
 int main()
 {
 	sf::UdpSocket cSocket;
-	cSocket.bind(55001);
+	//cSocket.bind(55001, sf::IpAddress(192, 168, 0, 29));
 	sf::Packet cPacket;
 
 
@@ -119,11 +119,10 @@ int main()
 	Player p1;
 
 	Player p;
-	std::cout << p.m_color.r;
 	sf::UdpSocket sSocket;
 	sSocket.setBlocking(false);
 	unsigned short sPort = 55002;
-	sSocket.bind(sPort);
+	sSocket.bind(sPort, sf::IpAddress(192, 168, 0, 29));
 	//sf::IpAddress sIpAddress = sf::IpAddress::getLocalAddress();
 	//sf::IpAddress sIpAddress(192, 168, 10, 147);
 	//sf::IpAddress sIpAddress2(192, 168, 10, 148);
@@ -147,10 +146,12 @@ int main()
 		
 		
 		sPacket.clear();
-			sSocket.receive(sPacket, sIpAddress, sPort);
-		//sPacket >> p;
+		sSocket.receive(sPacket, sIpAddress, sPort);
 		if (sPacket.getDataSize() > 0)
+		{
+			//sPacket >> p;
 			std::cout << p.m_pos.x << std::endl;
+		}
 		
 		p.Display();
 		p1.Display();

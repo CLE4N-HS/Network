@@ -76,8 +76,10 @@ void ServerUpdate()
 	sf::UdpSocket sSocket;
 	sSocket.bind(55002);
 	//sf::IpAddress sIpAddress = sf::IpAddress::getLocalAddress();
-	sf::IpAddress sIpAddress(192, 168, 10, 147);
-	sf::IpAddress sIpAddress2(192, 168, 10, 148);
+	//sf::IpAddress sIpAddress(192, 168, 10, 147);
+	//sf::IpAddress sIpAddress2(192, 168, 10, 148);
+	sf::IpAddress sIpAddress(192, 168, 0, 29);
+	sf::IpAddress sIpAddress2(192, 168, 0, 29);
 	//sf::IpAddress sIpAddress(255, 1, 2, 3);
 	sf::Packet sPacket;
 	unsigned short sPort = 55002;
@@ -106,21 +108,11 @@ void ServerUpdate()
 
 int main()
 {
-	// server
-	//sf::UdpSocket sSocket;
-	//sSocket.bind(55002);
-	//sf::Packet sPacket;
-	//sf::IpAddress sIpAddress = sf::IpAddress::getLocalAddress();
-
-	// client
 	sf::UdpSocket cSocket;
 	cSocket.bind(55001);
 	sf::Packet cPacket;
 
-
 	Window window(sf::String("SFML Network SERVER"), sf::Style::Default);
-
-
 
 	//sf::Thread serverThread(&ServerUpdate);
 	//serverThread.launch();
@@ -128,15 +120,16 @@ int main()
 
 	Player p1;
 
-
-
 	// server
 	Player p;
 	sf::UdpSocket sSocket;
+	sSocket.setBlocking(false);
 	sSocket.bind(55002);
 	//sf::IpAddress sIpAddress = sf::IpAddress::getLocalAddress();
-	sf::IpAddress cIpAddress(192, 168, 10, 148);
-	sf::IpAddress cIpAddress2(192, 168, 10, 147);
+	//sf::IpAddress cIpAddress(192, 168, 10, 148);
+	//sf::IpAddress cIpAddress2(192, 168, 10, 147);
+	sf::IpAddress cIpAddress(192, 168, 0, 29);
+	sf::IpAddress cIpAddress2(192, 168, 0, 29);
 	//sf::IpAddress sIpAddress(255, 1, 2, 3);
 	sf::Packet sPacket;
 	unsigned short sPort = 55002;
@@ -145,8 +138,11 @@ int main()
 
 	while (!Window::IsDone())
 	{	
-		//Tools::Update();
+		Tools::Update();
 		Window::Update();
+
+		//std::cout << "SERVER Framerate : " << 1.f / Tools::GetDeltaTime() << std::endl;
+
 		//window.Update();
 
 		//p1.UpdateMovement();
@@ -154,18 +150,20 @@ int main()
 		cPacket.clear();
 
 		// recieve
-		if (nbPlayer >= 1 && cPacket.getDataSize() > 0)
+		if (nbPlayer >= 1)
 			sSocket.receive(cPacket, cIpAddress, sPort);
-		if (nbPlayer >= 2 && cPacket.getDataSize() > 0)
+		if (nbPlayer >= 2)
 			sSocket.receive(cPacket, cIpAddress2, sPort);
 
+
 		// send
-		if (nbPlayer >= 1)
+		if (nbPlayer >= 1 && cPacket.getDataSize() > 0)
 			sSocket.send(cPacket, cIpAddress, sPort);
-		if (nbPlayer >= 1)
+		if (nbPlayer >= 2)
 			sSocket.send(cPacket, cIpAddress2, sPort);
 
-		continue;
+		//cPacket >> p;
+		//std::cout << "SEND : " << p.m_pos.x << std::endl;
 		
 		//cPacket.clear();
 		//cPacket << p1;
@@ -190,7 +188,7 @@ int main()
 		//
 		//p.Display();
 
-		//Window::Display();
+		Window::Display();
 		//p1.Display();
 		
 		//window.Display();
